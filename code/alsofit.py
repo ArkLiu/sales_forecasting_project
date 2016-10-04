@@ -26,18 +26,18 @@ class AlsoFit(object):
             self.df[year] = 0
 
     def transform(self):
-        self._create_features('make')
-        self._create_year_features('year')
+        self._create_features('also_fit_make')
+        self._create_year_features('also_fit_year')
         for make in self.make_list:
             print 'update {}'.format(make)
             self.df[make] = self.df.apply(
-                lambda x: 1 if x['make'] == make else x[make], axis=1)
+                lambda x: 1 if x['also_fit_make'] == make else x[make], axis=1)
         for year in self.year_list:
             print 'update {}'.format(year)
             self.df[year] = self.df.apply(
-                lambda x: 1 if str(x['year']) == year else
+                lambda x: 1 if str(x['also_fit_year']) == year else
                 x[year], axis=1)
-        self.df.drop(labels=['make', 'year'], axis=1, inplace=True)
+        self.df.drop(labels=['also_fit_make', 'also_fit_year'], axis=1, inplace=True)
         self.df = self.df.groupby(by='item_number').sum()
         for index in self.df.index:
             self.df.ix[index, 1:] = self.df.ix[
