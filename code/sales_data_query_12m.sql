@@ -1,29 +1,29 @@
-/* Formatted on 10/4/2016 3:49:28 PM (QP5 v5.287) */
+/* Formatted on 10/4/2016 4:40:08 PM (QP5 v5.287) */
 DECLARE
-   p_predict_month      VARCHAR2 (100) := '2016-01';
-   p_train_period       NUMBER := 6;
+   p_predict_month      VARCHAR2 (100) := '2016-06';
+   p_train_period       NUMBER := 3;
 
-   p_pl_fm              VARCHAR2 (100) := '1011';
-   p_pl_to              VARCHAR2 (100) := '1013';
+   p_pl_fm              VARCHAR2 (10) := '1011';
+   p_pl_to              VARCHAR2 (10) := '1013';
    p_br_fm              NUMBER := 81;
    p_br_to              NUMBER := 81;
    --
    ln_loop_ctr          NUMBER;
    lv_line_text         VARCHAR2 (2000);
-   lv_l12m_name         VARCHAR2 (100);
-   lv_l11m_name         VARCHAR2 (100);
-   lv_l10m_name         VARCHAR2 (100);
-   lv_l9m_name          VARCHAR2 (100);
-   lv_l8m_name          VARCHAR2 (100);
-   lv_l7m_name          VARCHAR2 (100);
-   lv_l6m_name          VARCHAR2 (100);
-   lv_l5m_name          VARCHAR2 (100);
-   lv_l4m_name          VARCHAR2 (100);
-   lv_l3m_name          VARCHAR2 (100);
-   lv_l2m_name          VARCHAR2 (100);
-   lv_l1m_name          VARCHAR2 (100);
-   lv_cm_name           VARCHAR2 (100);
-   lv_item_added_date   VARCHAR2 (100);
+   lv_l12m_name         VARCHAR2 (10);
+   lv_l11m_name         VARCHAR2 (10);
+   lv_l10m_name         VARCHAR2 (10);
+   lv_l9m_name          VARCHAR2 (10);
+   lv_l8m_name          VARCHAR2 (10);
+   lv_l7m_name          VARCHAR2 (10);
+   lv_l6m_name          VARCHAR2 (10);
+   lv_l5m_name          VARCHAR2 (10);
+   lv_l4m_name          VARCHAR2 (10);
+   lv_l3m_name          VARCHAR2 (10);
+   lv_l2m_name          VARCHAR2 (10);
+   lv_l1m_name          VARCHAR2 (10);
+   lv_cm_name           VARCHAR2 (10);
+   lv_item_added_date   VARCHAR2 (10);
 
    -- L12M  time period
    CURSOR cur_lag_period (
@@ -132,7 +132,7 @@ DECLARE
                           0))
                   cm_so
           FROM oe_order_headers_all oh,
-               xxgen_multiple_so_combine_v xmscv,
+               xxgen_multiple_so_combine_mv xmscv,
                mtl_system_items_b msi,
                mtl_item_categories mic,
                mtl_categories mc,
@@ -169,15 +169,15 @@ DECLARE
 
 BEGIN
    -- Assign the start_date and end_date
+   lv_line_text :=
+      'ITEM_NUMBER,BR_ID,L12M,L11M,L10M,L9M,L8M,L7M,L6M,L5M,L4M,L3M,L2M,L1M,CM';
+   dopl (lv_line_text);
 
-   dopl (
-      'ITEM_NUMBER,ITEM_ADDED_DATE,BR_ID,L12M,L11M,L10M,L9M,L8M,L7M,L6M,L5M,L4M,L3M,L2M,L1M,CM');
 
-
-   FOR rec_lag_period IN cur_lag_period (p_predict_month, 6)
+   FOR rec_lag_period IN cur_lag_period (p_predict_month, p_train_period)
    LOOP
+      lv_line_text := 'ITEM_NUMBER,BR_ID';
       ln_loop_ctr := 0;
-      lv_line_text := 'ITEM NUMBER,ITEM_ADDED_DATE,BR_ID';
 
       FOR rec_period IN cur_12m_period (rec_lag_period.ending_date)
       LOOP
@@ -227,8 +227,12 @@ BEGIN
          END IF;
       END LOOP;
 
-      -- Show Header
-      dopl (lv_line_text);
+      IF TRUE
+      THEN
+         dopl (lv_line_text);
+      ELSE
+         NULL;
+      END IF;
 
       FOR rec_sales_history IN cur_sales_history (rec_lag_period.ending_date)
       LOOP
@@ -236,8 +240,6 @@ BEGIN
          lv_line_text :=
                '"'
             || rec_sales_history.item_number
-            || '","'
-            || rec_sales_history.item_added_date
             || '",'
             || rec_sales_history.br_id
             || ','
