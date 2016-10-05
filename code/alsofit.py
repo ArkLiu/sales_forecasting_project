@@ -37,11 +37,12 @@ class AlsoFit(object):
             self.df[year] = self.df.apply(
                 lambda x: 1 if str(x['also_fit_year']) == year else
                 x[year], axis=1)
-        self.df.drop(labels=['also_fit_make', 'also_fit_year'], axis=1, inplace=True)
-        self.df = self.df.groupby(by='item_number').sum()
+        self.df.drop(
+            labels=['also_fit_make', 'also_fit_year'], axis=1, inplace=True)
+        self.df = self.df.groupby(by=['item_number', 'item_added_year']).sum()
         for index in self.df.index:
-            self.df.ix[index, 1:] = self.df.ix[
-                index, 1:].apply(lambda x: 1 if x != 0 else 0)
+            self.df.ix[index, 2:] = self.df.ix[
+                index, 2:].apply(lambda x: 1 if x != 0 else 0)
         self.df.drop_duplicates(inplace=True)
 if __name__ == '__main__':
     pass
