@@ -25,26 +25,20 @@ class MSF(object):
         pass
 
     def predict(self, df):
-        return df.mean(axis=1)
+        return df.mean(axis=1).values
 
 
-class Scores(object):
+class Score(object):
 
     def __init__(self):
-        self.X_test = None
-        self.y_test = None
-        self.y_pred_1 = None
-        self.y_pred_2 = None
-
-        self.r_sqrt_1 = None
-        self.r_sqrt_1 = None
-
-    def fit(self, X_test, y_test, y_pred_1, y_pred_2):
-        self.X_test, self.y_test, self.y_pred_1, self.y_pred_2 = X_test, y_test, y_pred_1, y_pred_2
-
-    def _calculate(self):
         pass
-    def Scores
+
+    def rmse_score(self, y_true, y_predict):
+        return np.sqrt(((y_true - y_predict) ** 2).mean())
+
+    def r2_score(self, y_true, y_predict):
+        return 1 - (((y_true - y_predict)**2).sum() /
+                    ((y_true - y_true.mean())**2).sum())
 
 if __name__ == '__main__':
     pass

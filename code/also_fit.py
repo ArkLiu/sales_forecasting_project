@@ -38,11 +38,12 @@ class AlsoFit(object):
                 lambda x: 1 if str(x['ALSO_FIT_YEAR']) == year else
                 x[year], axis=1)
         self.df.drop(
-            labels=['ALSO_FIT_MAKE', 'ALSO_FIT_YEAR'], axis=1, inplace=True)
+            labels=['ALSO_FIT_YEAR', 'ALSO_FIT_MAKE', 'ALSO_FIT_MODEL'], axis=1, inplace=True)
         self.df = self.df.groupby(by=['ITEM_NUMBER', 'ITEM_ADDED_YEAR']).sum()
         for index in self.df.index:
             self.df.ix[index, :] = self.df.ix[
                 index, ::].apply(lambda x: 1 if x != 0 else 0)
+
 if __name__ == '__main__':
     df = pd.read_csv('../data/also_fit_raw.csv')
     af = AlsoFit()
