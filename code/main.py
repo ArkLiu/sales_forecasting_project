@@ -19,7 +19,7 @@ if __name__ == '__main__':
     also_fit_path = '../data/also_fit_clean.csv'
     # train_file_path = '../data/train_data_predict_2016_06_3m.csv'
     # test_file_path = '../data/test_data_predict_2016_07_1m.csv'
-    train_file_path = '../data/predict_2016_03_1m.csv'
+    train_file_path = '../data/predict_2016_02_1m.csv'
     test_file_path = '../data/predict_2016_04_1m.csv'
 
     # print "fitting train data"
@@ -32,7 +32,7 @@ if __name__ == '__main__':
     df_s = pd.read_csv(test_file_path, low_memory=False)
     X_test, y_test = transform(df_a, df_s)
 
-    model = RandomForestRegressor(n_estimators=50, n_jobs=-1)
+    model = RandomForestRegressor(n_estimators=10, n_jobs=-1)
     # model = GradientBoostingRegressor(n_estimators=100)
 
     model.fit(X_train, y_train)
@@ -52,5 +52,5 @@ if __name__ == '__main__':
     print
 
     s.item_rank_score(msf_pred, model_pred)
-    # for x in sorted(zip(model.feature_importances_, X_train.columns), reverse=True)[:20]:
-    #     print x[1], x[0]
+    for x in sorted(zip(model.feature_importances_, X_train.columns), reverse=True)[:30]:
+        print x[1], x[0]

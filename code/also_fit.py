@@ -27,26 +27,27 @@ class AlsoFit(object):
 
     def transform(self):
         self._create_features('ALSO_FIT_MAKE')
-        self._create_year_features('ALSO_FIT_YEAR')
+
+        # Generate Make features
         for make in self.make_list:
-            print 'update {}'.format(make)
+
             self.df[make] = self.df.apply(
                 lambda x: 1 if x['ALSO_FIT_MAKE'] == make else x[make], axis=1)
-        for year in self.year_list:
-            print 'update {}'.format(year)
-            self.df[year] = self.df.apply(
-                lambda x: 1 if str(x['ALSO_FIT_YEAR']) == year else
-                x[year], axis=1)
+
         self.df.drop(
-            labels=['ALSO_FIT_YEAR', 'ALSO_FIT_MAKE', 'ALSO_FIT_MODEL'], axis=1, inplace=True)
-        self.df = self.df.groupby(by=['ITEM_NUMBER', 'ITEM_ADDED_YEAR']).sum()
+            labels=['ALSO_FIT_MAKE'], axis=1, inplace=True)
+
+        self.df = self.df.groupby(
+            by=['PRODUCT_LINE', 'ITEM_NUMBER', 'ITEM_ADDED_MONTH', 'ALSO_FIT_YEAR_FROM', 'ALSO_FIT_YEAR_TO']).sum()
+
+        # Convert all values to 1 and 0
         for index in self.df.index:
             self.df.ix[index, :] = self.df.ix[
                 index, ::].apply(lambda x: 1 if x != 0 else 0)
 
 if __name__ == '__main__':
-    df = pd.read_csv('../data/also_fit_raw.csv')
+    df = pd.read_csv('../data/also_fit_raw_new.csv')
     af = AlsoFit()
     af.load_data(df)
     af.transform()
-    af.df.to_csv('../data/also_fit_clean.csv')
+    af.df.to_csv('../data/also_fit_clean_new.csv')
