@@ -33,7 +33,7 @@ class Score(object):
     def __init__(self):
         self.X_true = pd.DataFrame()
         self.y_true = pd.Series()
-        self.item_cols = ['RANK_A', 'RANK_B', 'RANK_C', 'RANK_N']
+        self.item_cols = ['RANK_A', 'RANK_B', 'RANK_C','RANK_D', 'RANK_N']
 
     def load_data(self, df, series):
         self.X_true = df
