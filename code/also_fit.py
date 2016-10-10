@@ -7,7 +7,6 @@ class AlsoFit(object):
     def __init__(self):
         self.df = pd.DataFrame()
         self.make_list = []
-        self.year_list = []
 
     def load_data(self, input_df):
         self.df = input_df
@@ -21,9 +20,7 @@ class AlsoFit(object):
     def transform(self):
         self._create_features('ALSO_FIT_MAKE')
 
-        # Generate Make features
         for make in self.make_list:
-
             self.df[make] = self.df.apply(
                 lambda x: 1 if x['ALSO_FIT_MAKE'] == make else x[make], axis=1)
 
@@ -32,15 +29,9 @@ class AlsoFit(object):
 
         self.df = self.df.groupby(
             by=['PRODUCT_LINE', 'ITEM_NUMBER', 'ITEM_ADDED_MONTH', 'RANK_A', 'RANK_B', 'RANK_C', 'RANK_D', 'RANK_N', 'ALSO_FIT_YEAR_FROM', 'ALSO_FIT_YEAR_TO']).max()
-        #
-        # # Convert all values to 1 and 0
-        # for index in self.df.index:
-        #     self.df.ix[index, :] = self.df.ix[
-        #         index, ::].apply(lambda x: 1 if x != 0 else 0)
-
 if __name__ == '__main__':
-    df = pd.read_csv('../data/also_fit_raw_all.csv')
+    df = pd.read_csv('../data/also_fit_raw.csv')
     af = AlsoFit()
     af.load_data(df)
     af.transform()
-    af.df.to_csv('../data/also_fit_clean_all.csv')
+    af.df.to_csv('../data/also_fit_clean.csv')
