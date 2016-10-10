@@ -1,9 +1,8 @@
-/* Formatted on 10/7/2016 5:33:13 PM (QP5 v5.287) */
+/* Formatted on 10/9/2016 8:04:38 PM (QP5 v5.287) */
   SELECT DISTINCT
-         mc.segment1 || mc.segment2 product_line,
+         mc.segment1 || mc.segment2 PL,
          msi.segment1 item_number,
-         TO_CHAR (TO_DATE (msi.attribute3, 'MM/DD/RR'), 'RRRRMM')
-            item_added_month,
+         TO_CHAR (TO_DATE (msi.attribute3, 'MM/DD/RR'), 'RRRRMM') ac_month,
          DECODE (NVL (msi.attribute1, 'D'), 'A', 1, 0) rank_a,
          DECODE (NVL (msi.attribute1, 'D'), 'B', 1, 0) rank_b,
          DECODE (NVL (msi.attribute1, 'D'), 'C', 1, 0) rank_c,

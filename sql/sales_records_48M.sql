@@ -1,6 +1,6 @@
-/* Formatted on 10/8/2016 10:06:50 AM (QP5 v5.287) */
+/* Formatted on 10/8/2016 10:22:16 PM (QP5 v5.287) */
 DECLARE
-   p_predict_month       VARCHAR2 (10) := '2016-01';
+   p_predict_month       VARCHAR2 (10) := '2016-03';
    p_train_period        NUMBER := 1;
 
    p_product_line_from   VARCHAR2 (10) := '1011';
