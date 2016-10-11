@@ -7,6 +7,8 @@ class AlsoFit(object):
     def __init__(self):
         self.df = pd.DataFrame()
         self.make_list = []
+        self.group_by_list = ['PRODUCT_LINE', 'ITEM_NUMBER', 'ITEM_RANK', 'AC_MONTH', 'RANK_A',
+                              'RANK_B', 'RANK_C', 'RANK_D', 'RANK_N', 'ALSO_FIT_YEAR_FROM', 'ALSO_FIT_YEAR_TO']
 
     def load_data(self, input_df):
         self.df = input_df
@@ -27,8 +29,7 @@ class AlsoFit(object):
         self.df.drop(
             labels=['ALSO_FIT_MAKE'], axis=1, inplace=True)
 
-        self.df = self.df.groupby(
-            by=['PRODUCT_LINE', 'ITEM_NUMBER', 'ITEM_ADDED_MONTH', 'RANK_A', 'RANK_B', 'RANK_C', 'RANK_D', 'RANK_N', 'ALSO_FIT_YEAR_FROM', 'ALSO_FIT_YEAR_TO']).max()
+        self.df = self.df.groupby(self.group_by_list).max()
 if __name__ == '__main__':
     df = pd.read_csv('../data/also_fit_raw.csv')
     af = AlsoFit()
