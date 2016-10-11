@@ -93,9 +93,9 @@ class Score(object):
         y_pred_1 = y_pred_1.apply(lambda x: round(x))
         y_pred_2 = y_pred_2.apply(lambda x: round(x))
         x = range(len(self.y_test))
-        plt.plot(x,y_pred_1 -self.y_test,c='r',label='model_1')
-        plt.plot(x,y_pred_2 -self.y_test,c='g',label='model_2')
-        plt.ylim(-50,50)
+        plt.plot(x, y_pred_1 - self.y_test, c='r', label='model_1')
+        plt.plot(x, y_pred_2 - self.y_test, c='g', label='model_2')
+        plt.ylim(-50, 50)
 
 if __name__ == '__main__':
     pass
