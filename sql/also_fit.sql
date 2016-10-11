@@ -1,7 +1,8 @@
-/* Formatted on 10/9/2016 8:04:38 PM (QP5 v5.287) */
+/* Formatted on 10/10/2016 10:16:21 PM (QP5 v5.287) */
   SELECT DISTINCT
-         mc.segment1 || mc.segment2 PL,
+         mc.segment1 || mc.segment2 PRODUCT_LINE,
          msi.segment1 item_number,
+         msi.attribute1 item_rank,
          TO_CHAR (TO_DATE (msi.attribute3, 'MM/DD/RR'), 'RRRRMM') ac_month,
          DECODE (NVL (msi.attribute1, 'D'), 'A', 1, 0) rank_a,
          DECODE (NVL (msi.attribute1, 'D'), 'B', 1, 0) rank_b,
@@ -22,8 +23,14 @@
          AND aces.inventory_item_id = msi.inventory_item_id
          AND mc.segment1 != '40'
          AND mc.segment1 < '90'
+         AND msi.attribute1 IN ('A',
+                                'B',
+                                'C',
+                                'D',
+                                'N')
 GROUP BY mc.segment1 || mc.segment2,
          msi.segment1,
+         msi.attribute1,
          TO_CHAR (TO_DATE (msi.attribute3, 'MM/DD/RR'), 'RRRRMM'),
          DECODE (NVL (msi.attribute1, 'D'), 'A', 1, 0),
          DECODE (NVL (msi.attribute1, 'D'), 'B', 1, 0),
@@ -33,6 +40,7 @@ GROUP BY mc.segment1 || mc.segment2,
          aces.make
 ORDER BY mc.segment1 || mc.segment2 DESC,
          msi.segment1,
+         msi.attribute1,
          MIN (aces.year),
          MAX (aces.year),
          aces.make
