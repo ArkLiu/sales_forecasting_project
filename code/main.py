@@ -13,9 +13,10 @@ def transform(a, b):
     b.set_index(keys=b.ITEM_NUMBER, drop=True, inplace=True)
     X = a.join(b, how='inner', rsuffix='_x')
     X.reset_index(drop=True, inplace=True)
-    output_df = X.ix[:, ['ITEM_NUMBER', 'BR_ID',
-                         'RANK_A', 'RANK_B', 'RANK_C', 'RANK_D', 'RANK_N', 'NM']]
-    X.drop(['ITEM_NUMBER', 'ITEM_NUMBER_x', 'CM'], axis=1, inplace=True)
+    output_df = X.ix[:, ['PRODUCT_LINE', 'ITEM_NUMBER', 'ITEM_RANK', 'BR_ID',
+                         'RANK_A', 'RANK_B', 'RANK_C', 'RANK_D', 'RANK_N']]
+    X.drop(['ITEM_NUMBER', 'ITEM_NUMBER_x',
+            'ITEM_RANK', 'CM'], axis=1, inplace=True)
 
     # X['L12-11_S'] = X.ix[:, 'L12M':'L11M'].sum(axis=1)
     # X['L10-9_S'] = X.ix[:, 'L10M':'L9M'].sum(axis=1)
@@ -47,17 +48,22 @@ def transform(a, b):
 
 
 def round_number(series):
-    return series.apply(lambda x: round(x))
+    return series.apply(lambda x: int(round(x)))
 
 if __name__ == '__main__':
-    train_list = ['/Users/ark/Dropbox/sales_data/201605.csv',
-                  '/Users/ark/Dropbox/sales_data/201606.csv', '/Users/ark/Dropbox/sales_data/201607.csv']
-    test_list = ['/Users/ark/Dropbox/sales_data/201607.csv',
-                 '/Users/ark/Dropbox/sales_data/201608.csv', '/Users/ark/Dropbox/sales_data/201609.csv']
+    train_list = ['../sales_data/201511.csv',
+                  '../sales_data/201512.csv',
+                  '../sales_data/201601.csv',
+                  '../sales_data/201602.csv',
+                  '../sales_data/201603.csv', '../sales_data/201604.csv', '../sales_data/201605.csv',
+                  '../sales_data/201606.csv', '../sales_data/201607.csv']
+    test_list = ['../sales_data/201601.csv',
+                 '../sales_data/201602.csv',        '../sales_data/201603.csv',        '../sales_data/201604.csv',        '../sales_data/201605.csv', '../sales_data/201606.csv', '../sales_data/201607.csv',
+                 '../sales_data/201608.csv', '../sales_data/201609.csv']
     also_fit_path = '../data/also_fit_clean.csv'
 
     for files in zip(train_list, test_list):
-        predict_month = files[1][-10:-4]
+        predict_date = '{}_{}'.format(files[1][-10:-6], files[1][-6:-4])
 
         df_a = pd.read_csv(also_fit_path, low_memory=False)
         df_s = pd.read_csv(files[0], low_memory=False)
@@ -91,12 +97,14 @@ if __name__ == '__main__':
         # s.plot_3(msf_pred, model_pred)
         # plt.legend()
         # plt.show()
-
-        output_df['MSF_FORECAST'] = round_number(msf_pred)
-        output_df['RF_FORECAST'] = round_number(model_pred)
+        output_df['{}_ACTUAL'.format(predict_date)] = y_test
+        output_df['{}_MSF_FORECAST'.format(
+            predict_date)] = round_number(msf_pred)
+        output_df['{}_RF_FORECAST'.format(
+            predict_date)] = round_number(model_pred)
         # print output_df.head()
         output_df.to_csv(
-            '/Users/ark/Dropbox/sales_data/{}_forecast.csv'.format(predict_month), mode='w', index=False)
+            '../forecast_data/{}_forecast.csv'.format(predict_date), mode='w', index=False)
         # s.item_rank_score(msf_pred, model_pred)
 
         # Display top 30 important features
