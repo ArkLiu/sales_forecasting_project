@@ -1,4 +1,4 @@
-/* Formatted on 10/10/2016 10:16:21 PM (QP5 v5.287) */
+/* Formatted on 10/10/2016 11:57:06 PM (QP5 v5.287) */
   SELECT DISTINCT
          mc.segment1 || mc.segment2 PRODUCT_LINE,
          msi.segment1 item_number,
@@ -21,6 +21,7 @@
          AND mc.category_id = mic.category_id
          AND mc.structure_id = 101
          AND aces.inventory_item_id = msi.inventory_item_id
+         AND mc.segment1 || mc.segment2 != '1014'
          AND mc.segment1 != '40'
          AND mc.segment1 < '90'
          AND msi.attribute1 IN ('A',
@@ -38,7 +39,7 @@ GROUP BY mc.segment1 || mc.segment2,
          DECODE (NVL (msi.attribute1, 'D'), 'D', 1, 0),
          DECODE (NVL (msi.attribute1, 'D'), 'N', 1, 0),
          aces.make
-ORDER BY mc.segment1 || mc.segment2 DESC,
+ORDER BY mc.segment1 || mc.segment2,
          msi.segment1,
          msi.attribute1,
          MIN (aces.year),
