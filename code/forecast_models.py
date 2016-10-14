@@ -1,33 +1,61 @@
-"""
-Assume "Month" to be the unit of time and, Last 12 Months Sales Data area Available and Relative Stable.
-
-Then, Sales Forecast = Monthly Sales Forecast(MSF)
-                     = Mean of Last 12 Months Sales
-
-CLASSES:
-    MSF --
-    Assume "Month" to be the unit of time and, Last 12 Months Sales Data area Available and Relative Stable.
-    Then, Sales Forecast = Monthly Sales Forecast(MSF)
-                         = Mean of Last 12 Months Sales
-
-FUNCTIONS:
-    fit -- the DataFrame with last 12 month sales records
-    strptime -- Calculates the time struct represented by the passed-in string
-
-"""
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import seaborn as sb
+from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 
 
-class MSF(object):
+def transform(a, b):
+    index_list = ['ITEM_NUMBER', 'BR_ID']
+    X = pd.merge(a, b, how='inner', on=index_list)
+    output_df = X.ix[:, ['PRODUCT_LINE', 'ITEM_NUMBER', 'ITEM_RANK', 'BR_ID'
+                         ]]
+    X.drop(['ITEM_NUMBER',
+            'ITEM_RANK', 'CM'], axis=1, inplace=True)
+
+    X['L12-11_S'] = X.ix[:, 'L12M':'L11M'].sum(axis=1)
+    X['L10-9_S'] = X.ix[:, 'L10M':'L9M'].sum(axis=1)
+    X['L8-7M_S'] = X.ix[:, 'L9M':'L7M'].sum(axis=1)
+    X['L6-5M_S'] = X.ix[:, 'L6M':'L5M'].sum(axis=1)
+    X['L4-3_S'] = X.ix[:, 'L4M':'L3M'].sum(axis=1)
+    X['L2-1_S'] = X.ix[:, 'L2M':'L1M'].sum(axis=1)
+    #
+    X['Q4_S'] = X.ix[:, 'L12M':'L10M'].sum(axis=1)
+    X['Q3_S'] = X.ix[:, 'L9M':'L7M'].sum(axis=1)
+    X['Q2_S'] = X.ix[:, 'L7M':'L4M'].sum(axis=1)
+    X['Q1_S'] = X.ix[:, 'L3M':'L1M'].sum(axis=1)
+    #
+    X['2M_6'] = X.ix[:, 'L12M':'L11M'].mean(axis=1)
+    X['2M_5'] = X.ix[:, 'L10M':'L9M'].mean(axis=1)
+    X['2M_4'] = X.ix[:, 'L8M':'L7M'].mean(axis=1)
+    X['2M_3'] = X.ix[:, 'L6M':'L5M'].mean(axis=1)
+    X['2M_2'] = X.ix[:, 'L4M':'L3M'].mean(axis=1)
+    X['2M_1'] = X.ix[:, 'L2M':'L1M'].mean(axis=1)
+
+    X['3M_4'] = X.ix[:, 'L12M':'L10M'].mean(axis=1)
+    X['3M_3'] = X.ix[:, 'L9M':'L7M'].mean(axis=1)
+    X['3M_2'] = X.ix[:, 'L7M':'L4M'].mean(axis=1)
+    X['3M_1'] = X.ix[:, 'L3M':'L1M'].mean(axis=1)
+
+    X['6M_2'] = X.ix[:, 'L12M':'L7M'].mean(axis=1)
+    X['6M_1'] = X.ix[:, 'L6M':'L1M'].mean(axis=1)
+
+    X['12M_M'] = X.ix[:, 'L12M':'L1M'].mean(axis=1)
+
+    y = X.pop('NM')
+    return X, y, output_df
+
+
+class MovingAverages(object):
 
     def __init__(self):
-        pass
+        self.X_test = pd.DataFrame()
+        self.y_test = pd.Series()
 
-    def predict(self, df):
-        return df.mean(axis=1)
+    def fit(self, df):
+        self.X_test = df
+        self.y_test = self.X_test.mean(axis=1)
+
+    def predict(self):
+        return self.y_test
 
 
 class Score(object):
@@ -78,24 +106,6 @@ class Score(object):
             print col, ' Model A | Model B | TOTAL:{}'.format(mask.sum())
             print 'More Close:', mask.sum() - (mask & mask2).sum(), (mask & mask2).sum()
             print 'RMSE:',  self._rmse_score(self.y_test[mask], y_pred_1[mask]), self._rmse_score(self.y_test[mask], y_pred_2[mask])
-
-    def hist(self, y_pred, label):
-        y_pred = y_pred.apply(lambda x: round(x))
-        diff = y_pred - self.y_test
-        mask = (diff >= 50) | (diff <= -50)
-        print "outlier: {}".format(mask.sum())
-        # plt.hist(diff, bins=100, range=(-50, 50),
-        #          histtype='step', normed=True, label=label)
-        plt.hist(diff, bins=100, range=(-50, 50),
-                 histtype='bar', stacked=True, label=label)
-
-    def plot_2(self, y_pred_1, y_pred_2):
-        y_pred_1 = y_pred_1.apply(lambda x: round(x))
-        y_pred_2 = y_pred_2.apply(lambda x: round(x))
-        x = range(len(self.y_test))
-        plt.plot(x, y_pred_1 - self.y_test, c='r', label='model_1')
-        plt.plot(x, y_pred_2 - self.y_test, c='g', label='model_2')
-        plt.ylim(-50, 50)
 
 if __name__ == '__main__':
     pass
