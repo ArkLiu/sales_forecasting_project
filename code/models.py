@@ -20,7 +20,6 @@ def transform(a, s):
     X.drop(['ITEM_NUMBER',
             'ITEM_RANK', 'CM'], axis=1, inplace=True)
 
-    #
     X['L12-11_S'] = X.ix[:, 'L12M':'L11M'].sum(axis=1)
     X['L10-9_S'] = X.ix[:, 'L10M':'L9M'].sum(axis=1)
     X['L8-7M_S'] = X.ix[:, 'L9M':'L7M'].sum(axis=1)
