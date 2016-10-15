@@ -11,15 +11,33 @@ class AlsoFit(object):
                               'RANK_B', 'RANK_C', 'RANK_D', 'RANK_N']
 
     def load_data(self, input_df):
+        """load the DataFrame
+        """
         self.df = input_df
 
     def _create_features(self, column_name):
+        """Convert categorical variable into dummy variables
+
+        INPUT:
+            column_name -- string
+        OUTPUT:
+            None
+        """
+
         self.make_list = [str(x) for x in sorted(
             list(set(self.df[column_name].tolist())))]
         for col_name in self.make_list:
             self.df[col_name] = 0
 
     def transform(self):
+        """aggregate the product related information from also_fit_raw.csv into one records per product
+
+        INPUT:
+            None
+        OUTPUT:
+            None
+        """
+
         self._create_features('ALSO_FIT_MAKE')
 
         for make in self.make_list:
