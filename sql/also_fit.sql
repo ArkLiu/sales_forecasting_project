@@ -1,8 +1,9 @@
-/* Formatted on 10/10/2016 11:57:06 PM (QP5 v5.287) */
+/* Formatted on 10/11/2016 12:53:28 PM (QP5 v5.287) */
   SELECT DISTINCT
          mc.segment1 || mc.segment2 PRODUCT_LINE,
          msi.segment1 item_number,
          msi.attribute1 item_rank,
+         msi.organization_id br_id,
          TO_CHAR (TO_DATE (msi.attribute3, 'MM/DD/RR'), 'RRRRMM') ac_month,
          DECODE (NVL (msi.attribute1, 'D'), 'A', 1, 0) rank_a,
          DECODE (NVL (msi.attribute1, 'D'), 'B', 1, 0) rank_b,
@@ -19,6 +20,7 @@
    WHERE     mic.inventory_item_id = msi.inventory_item_id
          AND mic.organization_id = msi.organization_id
          AND mc.category_id = mic.category_id
+         AND msi.organization_id BETWEEN 81 AND 85
          AND mc.structure_id = 101
          AND aces.inventory_item_id = msi.inventory_item_id
          AND mc.segment1 || mc.segment2 != '1014'
@@ -32,6 +34,7 @@
 GROUP BY mc.segment1 || mc.segment2,
          msi.segment1,
          msi.attribute1,
+         msi.organization_id,
          TO_CHAR (TO_DATE (msi.attribute3, 'MM/DD/RR'), 'RRRRMM'),
          DECODE (NVL (msi.attribute1, 'D'), 'A', 1, 0),
          DECODE (NVL (msi.attribute1, 'D'), 'B', 1, 0),
@@ -42,6 +45,7 @@ GROUP BY mc.segment1 || mc.segment2,
 ORDER BY mc.segment1 || mc.segment2,
          msi.segment1,
          msi.attribute1,
+         msi.organization_id,
          MIN (aces.year),
          MAX (aces.year),
          aces.make

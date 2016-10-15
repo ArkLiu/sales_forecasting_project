@@ -52,8 +52,8 @@ class AlsoFit(object):
         self.df['ALSO_FIT_YEAR_FROM'] = year_from
 
 if __name__ == '__main__':
-    df = pd.read_csv('../data/also_fit_raw.csv')
+    df = pd.read_csv('../data_also_fit/also_fit_raw.csv')
     af = AlsoFit()
     af.load_data(df)
     af.transform()
-    af.df.to_csv('../data/also_fit_clean.csv', mode='w', index=True)
+    af.df.to_csv('../data_also_fit/also_fit_clean.csv', mode='w', index=True)

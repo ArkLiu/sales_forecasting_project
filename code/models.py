@@ -9,7 +9,8 @@ def transform(a, s):
         a -- the also_fit DataFrame
         a -- the sales history DataFrame
     OUTPUT:
-        X -- the features DataFrame for modeling
+        X -- the features DataFrame for modelingalso
+
         y -- the result DataFrame for modeling
         output_df -- the DataFrame contains the product information
     """

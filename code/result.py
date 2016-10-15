@@ -17,7 +17,7 @@ def run(predict_data_path):
     """
     path = predict_data_path
 
-    output_path = "../result/"
+    output_path = "../data_result/"
     os.system("rm {}result.csv".format(output_path))
 
     index_list = ['PRODUCT_LINE', 'ITEM_NUMBER', 'ITEM_RANK', 'BR_ID']
@@ -54,7 +54,6 @@ def run(predict_data_path):
         'PRODUCT_LINE', 'ITEM_RANK'], aggfunc=(len, np.mean, np.std)), 3)
     result_pv.to_csv(
         '{}result.csv'.format(output_path), mode='w', index=True)
-    print "Done"
 
 
 def cal_AE(df, actual_list, predict_list, column_label):
